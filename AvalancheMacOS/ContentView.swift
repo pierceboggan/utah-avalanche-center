@@ -16,10 +16,12 @@ struct ContentView: View {
         VStack {
             AvalancheRoseView(avalancheData: avalancheData)
             Text(avalancheData.formattedAdvisoryDate)
+                .foregroundColor(.black)
                 .padding()
         }
         .onAppear(perform: fetchAvalancheData)
         .padding()
+        .background(Color.white)
     }
 
     private func fetchAvalancheData() {
