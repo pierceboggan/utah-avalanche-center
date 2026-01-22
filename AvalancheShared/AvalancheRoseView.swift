@@ -9,7 +9,8 @@ public struct AvalancheRoseView: View {
     
     public var body: some View {
         GeometryReader { geometry in
-            if let url = URL(string: "https://utahavalanchecenter.org/" + avalancheData.overallDangerRoseImage) {
+            if !avalancheData.overallDangerRoseImage.isEmpty,
+               let url = URL(string: avalancheData.overallDangerRoseImage) {
                 AsyncImage(url: url) { image in
                     image
                         .resizable()
@@ -20,7 +21,7 @@ public struct AvalancheRoseView: View {
                 }
                 .padding(5)
             } else {
-                Text("Unable to load rose")
+                ProgressView()
             }
         }
     }

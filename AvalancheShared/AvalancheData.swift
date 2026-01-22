@@ -12,12 +12,24 @@ public struct AvalancheData: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.advisoryDateString = try container.decode(String.self, forKey: .advisoryDateString)
-        self.overallDangerRoseImage = try container.decode(String.self, forKey: .overallDangerRoseImage)
+        // The API returns HTML like: <img src="https://...">
+        // We need to extract just the URL
+        let rawImageHTML = try container.decode(String.self, forKey: .overallDangerRoseImage)
+        self.overallDangerRoseImage = AvalancheData.extractImageURL(from: rawImageHTML)
     }
     
     public init(advisoryDateString: String, overallDangerRoseImage: String) {
         self.advisoryDateString = advisoryDateString
         self.overallDangerRoseImage = overallDangerRoseImage
+    }
+    
+    private static func extractImageURL(from html: String) -> String {
+        // Extract URL from <img src="URL">
+        if let range = html.range(of: "src=\""),
+           let endRange = html.range(of: "\"", range: range.upperBound..<html.endIndex) {
+            return String(html[range.upperBound..<endRange.lowerBound])
+        }
+        return html
     }
     
     public static var placeholder: AvalancheData {
